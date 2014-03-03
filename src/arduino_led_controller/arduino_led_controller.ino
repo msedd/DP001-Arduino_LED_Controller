@@ -14,6 +14,9 @@ LiquidCrystal* lcd ;
 enum BtnKey {btnRIGHT, btnUP, btnDOWN, btnLEFT, btnSELECT, btnNONE};
 int oldkey = btnNONE;
 
+enum state{stateOn,stateOff};
+int currentState = stateOff;
+
 void setup() {
   lcd = new LiquidCrystal(8, 9, 4, 5, 6, 7);
   lcd->clear();
@@ -45,7 +48,20 @@ void onButtonClickCallBack(unsigned int buttonEvent){
      lcd->print("btnLEFT");
      break;
    case btnSELECT: 
-     lcd->print("btnSELECT");
+     if(currentState == stateOff){
+       currentState = stateOn;
+       lcd->setCursor(0, 0);
+       lcd->print("LEDs an");
+       lcd->setCursor(0, 1);
+       lcd->print("[aus]");
+     }else{
+       currentState = stateOff;
+       lcd->setCursor(0, 0);
+       lcd->print("LEDs aus");
+       lcd->setCursor(0, 1);
+       lcd->print("[an]");
+     
+     }
      break;
    case btnNONE:
      lcd->print("btnNONE");
