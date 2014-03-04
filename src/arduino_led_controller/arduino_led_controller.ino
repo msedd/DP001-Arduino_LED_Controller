@@ -10,6 +10,26 @@
 
 #include <LiquidCrystal.h>
 
+struct RGB {
+    byte red;
+    byte green;
+    byte blue;
+};
+
+
+RGB black = {0,0,0};
+RGB white = {255,255,255};
+RGB red = {255,0,0};
+RGB green = {0,255,0};
+RGB blue = {0,0,255};
+RGB cyan = {0,255,255};
+RGB magenta = {255,0,255};
+RGB yellow = {255,255,0};
+
+RGB colors[7]   = {red, green, blue, cyan, magenta, yellow, white};
+String strColors[7] = {"red", "green", "blue", "cyan", "magenta", "yellow", "white"};
+int currentColorIndex = 0;
+
 LiquidCrystal* lcd ;
 enum BtnKey {btnRIGHT, btnUP, btnDOWN, btnLEFT, btnSELECT, btnNONE};
 int oldkey = btnNONE;
@@ -32,42 +52,39 @@ void setup() {
 void onButtonClickCallBack(unsigned int buttonEvent){
   
   lcd->clear();
-  lcd->setCursor(0, 1);
 
   switch(buttonEvent){
    case btnRIGHT:
-     lcd->print("btnRIGHT");
      break;
    case btnUP:
-     lcd->print("btnUP");
+     currentColorIndex = (currentColorIndex+1) %7;
      break; 
    case btnDOWN: 
-     lcd->print("btnDOWN");
+     currentColorIndex = (7+currentColorIndex-1) %7;
      break;
    case btnLEFT: 
-     lcd->print("btnLEFT");
      break;
    case btnSELECT: 
      if(currentState == stateOff){
        currentState = stateOn;
-       lcd->setCursor(0, 0);
-       lcd->print("LEDs an");
        lcd->setCursor(0, 1);
-       lcd->print("[aus]");
+       lcd->print("LEDs an ->");
+       lcd->setCursor(11, 1);
+       lcd->print("<aus>");
      }else{
        currentState = stateOff;
-       lcd->setCursor(0, 0);
-       lcd->print("LEDs aus");
        lcd->setCursor(0, 1);
-       lcd->print("[an]");
+       lcd->print("LEDs aus ->");
+       lcd->setCursor(12, 1);
+       lcd->print("<an>");
      
      }
      break;
    case btnNONE:
-     lcd->print("btnNONE");
      break;
   }
-  
+  lcd->setCursor(0, 0);
+  lcd->print(strColors[currentColorIndex]);
 
   
 }
