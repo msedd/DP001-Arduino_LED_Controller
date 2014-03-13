@@ -26,6 +26,11 @@ RGB cyan = {0,255,255};
 RGB magenta = {255,0,255};
 RGB yellow = {255,255,0};
 
+const int R_LED = 11;
+const int G_LED = 12;
+const int B_LED = 13;
+
+
 RGB colors[7]   = {red, green, blue, cyan, magenta, yellow, white};
 String strColors[7] = {"red", "green", "blue", "cyan", "magenta", "yellow", "white"};
 int currentColorIndex = 0;
@@ -45,8 +50,27 @@ void setup() {
   lcd->print("DP001:");
   lcd->setCursor(0, 1);
   lcd->print("A-LED-Controller");
+  
+  pinMode(R_LED, OUTPUT);
+  pinMode(G_LED, OUTPUT);
+  pinMode(B_LED, OUTPUT);     
+}
 
-
+void updateColor(){
+  lcd->setCursor(0, 0);
+  lcd->print(strColors[currentColorIndex]);
+  
+  if(currentState == stateOn){
+    
+    digitalWrite(R_LED, colors[currentColorIndex].red); 
+    digitalWrite(G_LED, colors[currentColorIndex].green); 
+    digitalWrite(B_LED, colors[currentColorIndex].blue); 
+  }
+}
+void switchOff(){
+  digitalWrite(R_LED, black.red); 
+  digitalWrite(G_LED, black.green); 
+  digitalWrite(B_LED, black.blue); 
 }
 
 void onButtonClickCallBack(unsigned int buttonEvent){
@@ -58,9 +82,11 @@ void onButtonClickCallBack(unsigned int buttonEvent){
      break;
    case btnUP:
      currentColorIndex = (currentColorIndex+1) %7;
+     updateColor();
      break; 
    case btnDOWN: 
      currentColorIndex = (7+currentColorIndex-1) %7;
+     updateColor();
      break;
    case btnLEFT: 
      break;
@@ -71,21 +97,21 @@ void onButtonClickCallBack(unsigned int buttonEvent){
        lcd->print("LEDs an ->");
        lcd->setCursor(11, 1);
        lcd->print("<aus>");
+       updateColor();
      }else{
        currentState = stateOff;
        lcd->setCursor(0, 1);
        lcd->print("LEDs aus ->");
        lcd->setCursor(12, 1);
        lcd->print("<an>");
+       switchOff();
+     
      
      }
      break;
    case btnNONE:
      break;
   }
-  lcd->setCursor(0, 0);
-  lcd->print(strColors[currentColorIndex]);
-
   
 }
 void readButtonValue() {
